@@ -1,0 +1,107 @@
+Package mongo.sablecc;
+
+Helpers
+
+	// Letras e digitos
+    qualquer_coisa = [0x0 .. 0xFFFFF];
+    numero = ['0' .. '9'];
+	letra = [['a' .. 'z'] + ['A' .. 'Z']];
+
+    // Simbolos
+    sublinhado = '_';
+    espaco = ' ';
+    aspas_duplas = '"';
+    aspas_simples = ''';
+    contra_barra = '/';
+    
+    asteristico = '*';
+
+    // Caracteres que as strings aceitam inclusive especiais e acentuacao
+    caracteres_permitidos = [32 .. 38] | [40 .. 126] | [0x00a1 .. 0x00ff];
+
+    // Caracteres que nao imprimem
+    tab = 9; // tabulacao
+    cr = 13; // carriage return (\r)
+    lf = 10; // line feed (\n)
+    quebra_de_linha =
+          lf		 
+        | (cr lf)	 
+        | cr;	  
+
+    id = letra(letra|numero|sublinhado)*;
+    sinal = '+'|'-';
+    n_int = sinal? numero+;
+    n_real = sinal? numero+ '.' numero+;
+    string = aspas_duplas [ qualquer_coisa - [10+13]]* aspas_duplas;
+    char = aspas_simples [ qualquer_coisa - [10+13]]* aspas_simples; 
+    
+States
+    normal, comentario;
+
+Tokens
+	// Simbolos ok
+	{normal} comma = ',';
+	{normal} colon = ':';
+	{normal} scolon = ';';
+	{normal} lpar = '(';
+	{normal} rpar = ')';
+	{normal} lsbrack = '[';
+	{normal} rsbrack = ']';
+	{normal} lcbrack = '{';
+	{normal} rcbrack = '}';
+	{normal} atrib = '=';
+
+    // Operadores aritmeticos ok
+	{normal} plus = '+';
+	{normal} minus = '-';
+	{normal} times = '*';
+	{normal} div = '/';
+	
+    // Operadores relacionais  ok
+    {normal} equal = '==';
+	{normal} diff = '!=';
+	{normal} less = '<';
+	{normal} lequal = '<=';
+	{normal} greater = '>';
+	{normal} gequal = '>=';
+
+    // Operadores logicos ok
+	{normal} and = '&&';
+	{normal} or = '||';
+	{normal} not = '!';
+
+    // Palavras reservadas verificar
+    {normal} if = 'if';
+    {normal} else = 'else';
+    {normal} while = 'while';
+    {normal} for = 'for';
+    {normal} foreach = 'for each';
+    {normal} float = 'float';
+    {normal} int = 'int';
+    {normal} char = 'char';
+    {normal} void = 'void';
+    {normal} return = 'return';
+    {normal} new = 'new';
+    
+    
+	// Identificadores  ok
+    {normal} id = id;
+    {normal} numint = n_int;
+    {normal} numfloat = n_real;
+    {normal} string = string;
+    {normal} l_char = char;
+    
+    // Espacos em branco 
+    {normal} espacobranco = (espaco | quebra_de_linha | tab)*;
+
+    // Comentarios
+    //{normal} commentline = '//' + [qualquer_coisa - [cr + lf]]* ; 
+    commentline = '//';
+    {normal -> comentario, comentario} commentblock = '/*';
+    {comentario} commentblockend = '*/';
+    {comentario} commentblockbody = [qualquer_coisa - ['*' + '/']]*;   //asteristico + contra_barra
+    {normal} commentblockerror = '*/';
+
+Ignored Tokens
+	espacobranco,commentline,commentblockbody,commentblock,commentblockend;
+	

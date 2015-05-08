@@ -1,0 +1,9 @@
+TInt TId TComma TId TScolon
+TInt TIdTScolon
+
+TInt TIdTLparTRparTLcbrack
+   TCommentlineTId TId TId
+   TId TAtrib TId TTimes TId TDiv TNumintTScolon
+   TReturn TId TScolon
+   TCommentblock
+TRcbrack

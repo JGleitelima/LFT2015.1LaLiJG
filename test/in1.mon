@@ -1,0 +1,11 @@
+int base , altura ;
+int area;
+
+int main(){
+   //comentario de linha
+   area = base * altura / 2;
+   return area ;
+   /*Comentário
+   de 
+   bloco /*aninhado*/ */
+}
